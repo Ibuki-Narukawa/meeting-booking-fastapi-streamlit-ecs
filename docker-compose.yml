@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  frontend:
+    build: frontend
+    image: meeting-booking-streamlit-ecs
+    container_name: meeting-booking-streamlit-ecs
+    ports:
+      - 8501:8501
+    depends_on:
+      - backend
+    environment:
+      - BACKEND_URL=http://backend:80
+    volumes:
+      - ./frontend:/app
+
+  backend:
+    build: backend
+    image: meeting-booking-fastapi-ecs
+    container_name: meeting-booking-fastapi-ecs
+    ports:
+      - 80:80
+    environment:
+      - SQLITE_PATH=sqlite:///./data/sql_app.db
+    volumes:
+      - ./backend/sql_app:/app/backend
+    # - ./data/sql_app.db:/app/data/sql_app.db
+  
