@@ -23,12 +23,12 @@ https://meeting-booking.net/
 - FastAPI 0.78.0
 - Stremlit 1.9.0
 - SQLite
+- Docker
 - AWS
     - ECS
     - ECR
     - EFS
     - ALB（ロードバランサー）
-- Docker
 
 ## 注力した機能：
 
