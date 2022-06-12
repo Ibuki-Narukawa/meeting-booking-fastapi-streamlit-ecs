@@ -29,6 +29,7 @@ https://meeting-booking.net/
     - ECR
     - EFS
     - ALB（ロードバランサー）
+    - Route53
 
 ## 注力した機能：
 
