@@ -31,8 +31,11 @@ https://meeting-booking.net/
     - ALB（ロードバランサー）
     - Route53
 
-## 注力した機能：
+## インフラ構成図
 
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/92006553/173228636-e42b096c-f1cc-41ce-a1b3-beecf9ea3f19.jpg" />
+</p>
 
 ## 作者
  
