@@ -27,7 +27,7 @@ https://meeting-booking.net/
     - ECS
     - ECR
     - EFS
-    - ALB(ロードバランサー)
+    - ALB（ロードバランサー）
 - Docker
 
 ## 注力した機能：
