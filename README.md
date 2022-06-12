@@ -21,7 +21,7 @@ https://meeting-booking.net/
  
 - Python 3.8.5
 - FastAPI 0.78.0
-- Stremlit 1.9.0
+- Streamlit 1.9.0
 - SQLite
 - Docker
 - AWS
