@@ -26,14 +26,14 @@ def get_db():
   finally:
     db.close()
 
-# @app.get("/")
-# async def index():
-#   return {"message": "Success"}
+@app.get("/")
+async def index():
+  return {"message": "Hello There!"}
 
-# Healthcheck
+# Health check
 @app.get("/healthcheck")
 async def healthcheck():
-  return "I'm healthy!"
+  return {"message": "I'm healthy!"}
 
 # Read (index)
 @app.get("/users", response_model=List[schemas.User])
