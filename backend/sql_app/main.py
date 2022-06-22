@@ -30,6 +30,11 @@ def get_db():
 # async def index():
 #   return {"message": "Success"}
 
+# Healthcheck
+@app.get("/healthcheck")
+async def healthcheck():
+  return "I'm healthy!"
+
 # Read (index)
 @app.get("/users", response_model=List[schemas.User])
 async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
