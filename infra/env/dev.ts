@@ -31,6 +31,6 @@ export const devParams: EnvParameters = {
       env: 'dev',
       branch: 'main',
     },
-  },
-  removalPolicy: RemovalPolicy.DESTROY
+    removalPolicy: RemovalPolicy.DESTROY
+  }
 };

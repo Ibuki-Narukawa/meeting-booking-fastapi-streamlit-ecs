@@ -12,7 +12,7 @@ export interface EcsParams {
     directory: string;
     dockerfilePath?: string;
     exclude?: string[];
-  }
+  };
 }
 
 export interface Route53Params {
@@ -20,7 +20,7 @@ export interface Route53Params {
     hostedZoneId: string;
     zoneName: string;
     domainName: string;
-  }
+  };
 }
 
 export interface StackParams {
@@ -28,21 +28,21 @@ export interface StackParams {
   apiParams: {
     ecs: EcsParams;
     route53?: Route53Params;
-  }
+  };
   frontendParams: {
     ecs: EcsParams;
     route53: Route53Params;
-  }
+  };
   cicd?: {
     env: string;
     branch: string;
   };
+  removalPolicy: RemovalPolicy;
 }
 
 export interface EnvParameters {
   account: string;
   stackParams: StackParams;
-  removalPolicy: RemovalPolicy;
 }
 
 const parameters: { [key: string]: EnvParameters } = {
