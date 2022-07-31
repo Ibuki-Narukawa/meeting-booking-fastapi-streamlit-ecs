@@ -1,0 +1,32 @@
+name: push-dev
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - README.md
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v2
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+      - name: run snapshot test
+        uses: ./.github/actions/run_snapshot_test
+        with:
+          infraDir: ./infra
+      - name: run cdk deploy
+        uses: ./.github/actions/run_cdk_deploy
+        id: run_cdk_deploy
+        with:
+          infraDir: ./infra
+          environment: dev
