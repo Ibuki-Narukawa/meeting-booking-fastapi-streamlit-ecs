@@ -8,6 +8,8 @@ const app = new cdk.App();
 
 const projectName = app.node.tryGetContext('projectName');
 const region = app.node.tryGetContext('region');
+console.log('Project name is ' + projectName);
+console.log('Region is ' + region);
 const env: environment.Environments =
   (app.node.tryGetContext('env') as environment.Environments) ||
   environment.Environments.DEV;
