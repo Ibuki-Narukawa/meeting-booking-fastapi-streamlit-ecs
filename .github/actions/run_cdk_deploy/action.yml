@@ -1,0 +1,41 @@
+name: run-cdk-deploy
+author: ibuki0212job@gmail.com
+description: run `cdk deploy` command
+inputs:
+  infraDir:
+    description: cdk top directory
+    required: true
+  environment:
+    description: environment name
+    required: true
+  nodeVersion:
+    description: nodejs major version
+    required: true
+    default: 16
+outputs:
+  result:
+    value: ${{ steps.run_cdk_deploy.outputs.result }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.nodeVersion }}
+    - name: cache node_modules
+      id: node_modules_cache
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ matrix.os }}-${{ hashFiles('./package-lock.json') }}
+    - name: install dependency
+      shell: bash
+      run: |
+        cd ${{ inputs.infraDir }}
+        npm install -g aws-cdk
+        npm install
+    - name: run cdk deploy
+      shell: bash
+      id: run_cdk_deploy
+      run: |
+        cd ${{ inputs.infraDir }}
+        cdk deploy -c env=${{ inputs.environment }} --require-approval never

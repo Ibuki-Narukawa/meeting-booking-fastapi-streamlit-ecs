@@ -1,0 +1,45 @@
+name: run-cdk-diff
+author: ibuki0212job@gmail.com
+description: run `cdk diff` command
+inputs:
+  infraDir:
+    description: cdk top directory
+    required: true
+  environment:
+    description: environment name
+    required: true
+  nodeVersion:
+    description: nodejs major version
+    required: true
+    default: 18
+outputs:
+  result:
+    value: ${{ steps.run_cdk_diff.outputs.result }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.nodeVersion }}
+    - name: cache node_modules
+      id: node_modules_cache
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ matrix.os }}-${{ hashFiles('./package-lock.json') }}
+    - name: install dependency
+      shell: bash
+      run: |
+        cd ${{ inputs.infraDir }}
+        npm install -g aws-cdk --legacy-peer-deps
+        npm install --legacy-peer-deps
+    - name: run cdk diff
+      shell: bash
+      id: run_cdk_diff
+      run: |
+        cd ${{ inputs.infraDir }}
+        cdk diff -c env=${{ inputs.environment }} 2>&1 | tee result.txt
+        result=`cat result.txt`
+        result="${result//$'\n'/\\n}"
+        result="${result//\'/\\\'}"
+        echo "::set-output name=result::$result"

@@ -1,0 +1,58 @@
+name: app-test-dev
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - backend/**
+      - .github/**
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.9-buster
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v2
+      - name: cache python package
+        id: cache_python_package
+        uses: actions/cache@v2
+        with:
+          path: /usr/local/lib/python3.9/site-packages
+          key: ${{ matrix.os }}-${{ hashFiles('./backend/poetry.lock') }}
+      - name: cache bin directory
+        id: cache_bin_directory
+        uses: actions/cache@v2
+        with:
+          path: /usr/local/bin
+          key: ${{ matrix.os }}-${{ hashFiles('./backend/poetry.lock') }}
+      - name: install dependencies
+        run: |
+          cd backend
+          pip install -U pip && pip install poetry
+          poetry config virtualenvs.create false
+          poetry install
+      - name: run flake8
+        run: |
+          cd backend
+          flake8 .
+      - name: run isort
+        run: |
+          cd backend
+          isort **/*.py -c
+      - name: run black
+        run: |
+          cd backend
+          black . --check
+      - name: run test
+        id: run_test
+        run: |
+          cd backend
+          export AWS_ACCESS_KEY_ID=dummy
+          export AWS_SECRET_ACCESS_KEY=dummy
+          export AWS_DEFAULT_REGION=us-west-1
+          pytest -m unit --cov

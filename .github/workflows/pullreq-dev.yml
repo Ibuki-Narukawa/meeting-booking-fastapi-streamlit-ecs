@@ -1,0 +1,42 @@
+name: pull-dev
+on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - README.md
+
+jobs:
+  dryrun:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v2
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+      - name: run snapshot test
+        uses: ./.github/actions/run_snapshot_test
+        with:
+          infraDir: ./infra
+      - name: run cdk diff
+        id: run_cdk_diff
+        uses: ./.github/actions/run_cdk_diff
+        with:
+          infraDir: ./infra
+          environment: dev
+      - name: send comment to pull request
+        uses: actions/github-script@0.8.0
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'result of `cdk diff` command.\n```${{ steps.run_cdk_diff.outputs.result }}\n```'
+            })

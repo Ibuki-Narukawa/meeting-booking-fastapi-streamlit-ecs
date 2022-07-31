@@ -17,7 +17,7 @@ import * as environment from '../env/parameters';
 export interface MeetingBookingStackProps extends StackProps {
   envName: string;
   projectName: string;
-  params: environment.StackParams
+  params: environment.StackParams;
 }
 
 export class MeetingBookingStack extends Stack {
