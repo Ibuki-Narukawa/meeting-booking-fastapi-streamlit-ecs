@@ -114,7 +114,7 @@ export class MeetingBookingStack extends Stack {
     });
 
     // create ECS Service
-    const apiService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, `service-${baseName}`, {
+    const apiService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, `api-service-${baseName}`, {
       cluster: cluster,
       desiredCount: 1,
       taskDefinition: apiTaskDefinition,
@@ -138,6 +138,49 @@ export class MeetingBookingStack extends Stack {
      * Building Frontend
      */
 
+    // define Hosted Zone for Frontend
+    const frontendHostedZone = route53.HostedZone.fromHostedZoneAttributes(this, `frontend-hosted-zone-${baseName}`, {
+      hostedZoneId: props.params.frontendParams.route53.customDomain.hostedZoneId,
+      zoneName: props.params.frontendParams.route53.customDomain.zoneName,
+    });
 
+    // create ECS Service
+    const frontendService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, `frontend-service-${baseName}`, {
+      cluster: cluster,
+      domainZone: frontendHostedZone,
+      domainName: props.params.frontendParams.route53.customDomain.domainName,
+      memoryLimitMiB: 512,
+      cpu: 256,
+      desiredCount: 1,
+      taskImageOptions: {
+        image: ecs.AssetImage.fromAsset(props.params.frontendParams.ecs.assetImage.directory, {
+          ignoreMode: IgnoreMode.DOCKER,
+          exclude: props.params.frontendParams.ecs.assetImage.exclude,
+        }),
+        executionRole: executionRole,
+        taskRole: serviceTaskRole,
+        containerPort: 8501,
+        enableLogging: true,
+        containerName: `frontend-${baseName}`,
+      },
+      taskSubnets: { subnets: vpc.privateSubnets },
+      protocol: elbv2.ApplicationProtocol.HTTPS,
+      openListener: false,
+    });
+
+    frontendService.taskDefinition.findContainer(`frontend-${baseName}`)?.addEnvironment(
+      'BACKEND_URL',
+      `http://${apiService.loadBalancer.loadBalancerDnsName}`,
+    );
+
+    props.params.sourceCidrs.forEach((cidr) => {
+      frontendService.loadBalancer.connections.allowFrom(ec2.Peer.ipv4(cidr), ec2.Port.tcp(443))
+    });
+
+    frontendService.service.connections.allowFrom(frontendService.loadBalancer, ec2.Port.tcp(80))
+
+    frontendService.targetGroup.configureHealthCheck({
+      path: '/',
+    });
   }
 }
