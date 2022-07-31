@@ -25,6 +25,7 @@ https://meeting-booking.net/
 - SQLite
 - Docker
 - AWS
+    - CDK（Infrastructure as Code）
     - ECS
     - ECR
     - EFS
