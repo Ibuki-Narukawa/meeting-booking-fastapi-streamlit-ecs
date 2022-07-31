@@ -31,6 +31,7 @@ https://meeting-booking.net/
     - EFS
     - ALB（ロードバランサー）
     - Route53
+- GitHub Actions    
 
 ## インフラ構成図
 
