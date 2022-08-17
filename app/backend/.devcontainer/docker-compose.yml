@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  backend:
+    build:
+      # poetry.lockファイルをコピーするためにビルドは親ディレクトリで行う
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ../..:/workspace:cached
+      - ~/.aws:/root/.aws
+      - ~/.ssh:/root/.ssh
+      - ~/.gitconfig:/root/.gitconfig
+    command: sleep infinity

@@ -31,7 +31,7 @@ export class MeetingBookingStack extends Stack {
      */
 
     // create VPC
-    const vpc = new ec2.Vpc(this, `vpc-${baseName}`, { 
+    const vpc = new ec2.Vpc(this, `vpc-${baseName}`, {
       maxAzs: 2,
       subnetConfiguration: [
         {

@@ -1,0 +1,7 @@
+generator=skeema:1.7.1-community
+
+[local]
+flavor=mysql:8.0
+host=mysql
+port=3306
+password=password

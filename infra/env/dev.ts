@@ -9,14 +9,14 @@ export const devParams: EnvParameters = {
     apiParams: {
       ecs: {
         assetImage: {
-          directory: path.join('..', 'backend'),
+          directory: path.join('..', 'app', 'backend'),
         }
       },
     },
     frontendParams: {
       ecs: {
         assetImage: {
-          directory: path.join('..', 'frontend'),
+          directory: path.join('..', 'app', 'frontend'),
         }
       },
       route53: {
